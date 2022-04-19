@@ -3,8 +3,8 @@ module "nsg" {
   source = "../../terraform-azurerm-nsg"
 
   rg_name   = module.rg.rg_name
-  location = module.rg.rg_location
-  nsg_name = "nsg-${var.short}-${var.loc}-${terraform.workspace}"
+  location  = module.rg.rg_location
+  nsg_name  = "nsg-${var.short}-${var.loc}-${terraform.workspace}"
   subnet_id = element(module.network.subnets_ids, 0)
 
   tags = module.rg.rg_tags
