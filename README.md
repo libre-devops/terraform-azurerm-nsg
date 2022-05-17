@@ -23,19 +23,19 @@ module "network" {
   subnet_prefixes = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
   subnet_names    = ["sn1-${module.network.vnet_name}", "sn2-${module.network.vnet_name}", "sn3-${module.network.vnet_name}"] //sn1-vnet-ldo-euw-dev-01
   subnet_service_endpoints = {
-    "sn1-${module.network.vnet_name}" = ["Microsoft.Storage"] // Adds extra subnet endpoints to sn1-vnet-ldo-euw-dev-01
+    "sn1-${module.network.vnet_name}" = ["Microsoft.Storage"]                   // Adds extra subnet endpoints to sn1-vnet-ldo-euw-dev-01
     "sn2-${module.network.vnet_name}" = ["Microsoft.Storage", "Microsoft.Sql"], // Adds extra subnet endpoints to sn2-vnet-ldo-euw-dev-01
-    "sn3-${module.network.vnet_name}" = ["Microsoft.AzureActiveDirectory"] // Adds extra subnet endpoints to sn3-vnet-ldo-euw-dev-01
+    "sn3-${module.network.vnet_name}" = ["Microsoft.AzureActiveDirectory"]      // Adds extra subnet endpoints to sn3-vnet-ldo-euw-dev-01
   }
 }
 
 module "nsg" {
-  source = "registry.terraform.io/libre-devops/network/azurerm"
+  source = "registry.terraform.io/libre-devops/nsg/azurerm"
 
   rg_name   = module.rg.rg_name
   location  = module.rg.rg_location
   nsg_name  = "nsg-${var.short}-${var.loc}-${terraform.workspace}"
-  subnet_id = element(module.network.subnets_ids, 0)
+  subnet_id = element(values(module.network.subnets_ids), 0)
 
   tags = module.rg.rg_tags
 }
