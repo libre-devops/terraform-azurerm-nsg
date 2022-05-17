@@ -29,7 +29,7 @@ module "network" {
 }
 
 module "nsg" {
-  source = "registry.terraform.io/libre-devops/network/azurerm"
+  source = "registry.terraform.io/libre-devops/nsg/azurerm"
 
   rg_name   = module.rg.rg_name
   location  = module.rg.rg_location
