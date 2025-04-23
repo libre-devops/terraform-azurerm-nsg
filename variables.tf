@@ -19,14 +19,24 @@ variable "associate_with_subnet" {
 variable "custom_nsg_rules" {
   description = "Custom NSG rules to apply if apply_standard_rules is set to false."
   type = map(object({
-    priority                   = number
-    direction                  = string
-    access                     = string
-    protocol                   = string
-    source_port_range          = string
-    destination_port_range     = string
-    source_address_prefix      = string
-    destination_address_prefix = string
+    name                                       = optional(string)
+    priority                                   = optional(number)
+    direction                                  = optional(string)
+    access                                     = optional(string)
+    protocol                                   = optional(string)
+    source_port_range                          = optional(string)
+    sources_port_ranges                        = optional(list(string))
+    destination_port_range                     = optional(string)
+    destination_port_ranges                    = optional(list(string))
+    source_address_prefix                      = optional(string)
+    source_address_prefixes                    = optional(list(string))
+    destination_address_prefix                 = optional(string)
+    destination_address_prefixes               = optional(list(string))
+    source_application_security_group_ids      = optional(list(string))
+    destination_application_security_group_ids = optional(list(string))
+    description                                = optional(string)
+    resource_group_name                        = optional(string)
+    network_security_group_name                = optional(string)
   }))
   default = {}
 }
@@ -52,10 +62,116 @@ variable "rg_name" {
   type        = string
 }
 
-variable "subnet_id" {
-  description = "The ID of the subnet for the NSG to be attached to"
-  type        = string
-  default     = null
+variable "standard_nsg_rules" {
+  description = "Standard NSG rules supplied by the module, these are applied by default"
+  type = map(object({
+    name                                       = optional(string)
+    priority                                   = optional(number)
+    direction                                  = optional(string)
+    access                                     = optional(string)
+    protocol                                   = optional(string)
+    source_port_range                          = optional(string)
+    sources_port_ranges                        = optional(list(string))
+    destination_port_range                     = optional(string)
+    destination_port_ranges                    = optional(list(string))
+    source_address_prefix                      = optional(string)
+    source_address_prefixes                    = optional(list(string))
+    destination_address_prefix                 = optional(string)
+    destination_address_prefixes               = optional(list(string))
+    source_application_security_group_ids      = optional(list(string))
+    destination_application_security_group_ids = optional(list(string))
+    description                                = optional(string)
+    resource_group_name                        = optional(string)
+    network_security_group_name                = optional(string)
+  }))
+  default = {
+    "DenyAllInbound" = {
+      priority                   = 4096
+      direction                  = "Inbound"
+      access                     = "Deny"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    },
+    "AllowAzureActiveDirectoryOutbound" = {
+      priority                   = 4050
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureActiveDirectory"
+    },
+    "AllowAzureBackupOutbound" = {
+      priority                   = 4045
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureBackup"
+    },
+    "AllowAzureCloudOutbound" = {
+      priority                   = 4040
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureCloud"
+    },
+    "AllowAzureKeyVaultOutbound" = {
+      priority                   = 4035
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureKeyVault"
+    },
+    "AllowAzureLoadBalancerOutbound" = {
+      priority                   = 4030
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureLoadBalancer"
+    },
+    "AllowAzureMonitorOutbound" = {
+      priority                   = 4025
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureMonitor"
+    },
+    "AllowAzureStorageOutbound" = {
+      priority                   = 4020
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "Storage"
+    }
+  }
+}
+
+variable "subnet_ids" {
+  description = "A map of subnet ids to pass"
+  type        = map(string)
+  default     = {}
 }
 
 variable "tags" {
