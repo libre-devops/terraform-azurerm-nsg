@@ -15,15 +15,15 @@ output "nsg_name" {
 
 output "nsg_network_interface_security_group_association_ids" {
   description = "The IDs of the Network Interface Security Group Associations"
-  value       = azurerm_network_interface_security_group_association.this.*.id
+  value       = azurerm_network_interface_security_group_association.this[*].id
 }
 
 output "nsg_rg_name" {
   value       = azurerm_network_security_group.nsg.resource_group_name
-  description = "The name of the resource group the nsg is in"
+  description = "The name of the resource group the NSG is in"
 }
 
 output "nsg_subnet_association_ids" {
   description = "The IDs of the Subnet Network Security Group Associations"
-  value       = azurerm_subnet_network_security_group_association.this.*.id
+  value       = [for assoc in azurerm_subnet_network_security_group_association.this : assoc.id]
 }

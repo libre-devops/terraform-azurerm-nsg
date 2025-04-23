@@ -130,5 +130,5 @@ No modules.
 | <a name="output_nsg_id"></a> [nsg\_id](#output\_nsg\_id) | The ID of the NSG |
 | <a name="output_nsg_name"></a> [nsg\_name](#output\_nsg\_name) | The name of the NSG |
 | <a name="output_nsg_network_interface_security_group_association_ids"></a> [nsg\_network\_interface\_security\_group\_association\_ids](#output\_nsg\_network\_interface\_security\_group\_association\_ids) | The IDs of the Network Interface Security Group Associations |
-| <a name="output_nsg_rg_name"></a> [nsg\_rg\_name](#output\_nsg\_rg\_name) | The name of the resource group the nsg is in |
+| <a name="output_nsg_rg_name"></a> [nsg\_rg\_name](#output\_nsg\_rg\_name) | The name of the resource group the NSG is in |
 | <a name="output_nsg_subnet_association_ids"></a> [nsg\_subnet\_association\_ids](#output\_nsg\_subnet\_association\_ids) | The IDs of the Subnet Network Security Group Associations |
