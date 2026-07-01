@@ -1,29 +1,44 @@
-output "final_nsg_rules" {
-  value       = local.final_nsg_rules
-  description = "The NSG rules list assigned as a variable"
+output "id" {
+  description = "The id of the network security group."
+  value       = azurerm_network_security_group.this.id
 }
 
-output "nsg_id" {
-  value       = azurerm_network_security_group.nsg.id
-  description = "The ID of the NSG"
+output "name" {
+  description = "The name of the network security group."
+  value       = azurerm_network_security_group.this.name
 }
 
-output "nsg_name" {
-  value       = azurerm_network_security_group.nsg.name
-  description = "The name of the NSG"
+output "network_interface_association_ids" {
+  description = "Map of logical name to network interface NSG association id (only the associations this module creates)."
+  value       = { for k, a in azurerm_network_interface_security_group_association.this : k => a.id }
 }
 
-output "nsg_network_interface_security_group_association_ids" {
-  description = "The IDs of the Network Interface Security Group Associations"
-  value       = azurerm_network_interface_security_group_association.this[*].id
+output "network_security_group" {
+  description = "The full azurerm_network_security_group resource."
+  value       = azurerm_network_security_group.this
 }
 
-output "nsg_rg_name" {
-  value       = azurerm_network_security_group.nsg.resource_group_name
-  description = "The name of the resource group the NSG is in"
+output "resource_group_name" {
+  description = "Resource group name parsed from resource_group_id."
+  value       = local.resource_group_name
 }
 
-output "nsg_subnet_association_ids" {
-  description = "The IDs of the Subnet Network Security Group Associations"
-  value       = [for assoc in azurerm_subnet_network_security_group_association.this : assoc.id]
+output "security_rule_ids" {
+  description = "Map of rule name to network security rule id (the effective merged rule set)."
+  value       = { for k, r in azurerm_network_security_rule.this : k => r.id }
+}
+
+output "security_rules" {
+  description = "The effective merged rule set (defaults plus custom), keyed by rule name."
+  value       = local.security_rules
+}
+
+output "subnet_association_ids" {
+  description = "Map of subnet name to subnet NSG association id (only the associations this module creates)."
+  value       = { for k, a in azurerm_subnet_network_security_group_association.this : k => a.id }
+}
+
+output "subscription_id" {
+  description = "Subscription id parsed from resource_group_id."
+  value       = local.rg.subscription_id
 }
