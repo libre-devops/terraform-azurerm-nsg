@@ -30,6 +30,7 @@ locals {
   vnet_name  = "vnet-${var.short}-${var.loc}-${terraform.workspace}-002"
   nsg_name   = "nsg-${var.short}-${var.loc}-${terraform.workspace}-002"
   asg_name   = "asg-${var.short}-${var.loc}-${terraform.workspace}-002"
+  nic_name   = "nic-${var.short}-${var.loc}-${terraform.workspace}-002"
   subnet_app = "snet-app-${local.vnet_name}"
   subnet_web = "snet-web-${local.vnet_name}"
 }
@@ -88,6 +89,22 @@ resource "azurerm_application_security_group" "this" {
   name = local.asg_name
 }
 
+# A standalone NIC in the app subnet, so the NSG can also be associated at the NIC level
+# (exercising network_interface_associations alongside the subnet associations).
+resource "azurerm_network_interface" "this" {
+  resource_group_name = module.rg.names[local.rg_name]
+  location            = local.location
+  tags                = module.tags.tags
+
+  name = local.nic_name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = module.network.subnet_ids[local.subnet_app]
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
 # Complete call: the secure defaults plus custom rules that exercise the fuller surface (a plural
 # destination_port_ranges, an application security group destination, and an override of a default
 # rule by name), associated with both subnets.
@@ -99,6 +116,10 @@ module "nsg" {
   tags              = module.tags.tags
 
   name = local.nsg_name
+
+  # Merge the module's secure defaults in with the rules below (this is the default). Set it to false
+  # to drop the module defaults and manage the entire rule set yourself via security_rules.
+  apply_default_rules = true
 
   security_rules = {
     # HTTPS in from the VNet only.
@@ -143,6 +164,10 @@ module "nsg" {
     (local.subnet_app) = module.network.subnet_ids[local.subnet_app]
     (local.subnet_web) = module.network.subnet_ids[local.subnet_web]
   }
+
+  network_interface_associations = {
+    (local.nic_name) = azurerm_network_interface.this.id
+  }
 }
 ```
 
@@ -174,6 +199,7 @@ module "nsg" {
 | Name | Type |
 |------|------|
 | [azurerm_application_security_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_security_group) | resource |
+| [azurerm_network_interface.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface) | resource |
 
 ## Inputs
 
@@ -189,6 +215,7 @@ module "nsg" {
 
 | Name | Description |
 |------|-------------|
+| <a name="output_network_interface_association_ids"></a> [network\_interface\_association\_ids](#output\_network\_interface\_association\_ids) | The network interface NSG association ids. |
 | <a name="output_nsg_id"></a> [nsg\_id](#output\_nsg\_id) | The id of the network security group. |
 | <a name="output_security_rule_ids"></a> [security\_rule\_ids](#output\_security\_rule\_ids) | The ids of the NSG rules (the effective merged set: defaults plus custom). |
 | <a name="output_subnet_association_ids"></a> [subnet\_association\_ids](#output\_subnet\_association\_ids) | The subnet NSG association ids. |

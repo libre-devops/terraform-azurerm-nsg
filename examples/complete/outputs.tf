@@ -1,3 +1,8 @@
+output "network_interface_association_ids" {
+  description = "The network interface NSG association ids."
+  value       = module.nsg.network_interface_association_ids
+}
+
 output "nsg_id" {
   description = "The id of the network security group."
   value       = module.nsg.id
