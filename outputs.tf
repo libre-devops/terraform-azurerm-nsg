@@ -42,3 +42,8 @@ output "subscription_id" {
   description = "Subscription id parsed from resource_group_id."
   value       = local.rg.subscription_id
 }
+
+output "tags" {
+  description = "The tags applied to the network security group."
+  value       = azurerm_network_security_group.this.tags
+}

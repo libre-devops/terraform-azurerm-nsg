@@ -165,4 +165,5 @@ No modules.
 | <a name="output_security_rules"></a> [security\_rules](#output\_security\_rules) | The effective merged rule set (defaults plus custom), keyed by rule name. |
 | <a name="output_subnet_association_ids"></a> [subnet\_association\_ids](#output\_subnet\_association\_ids) | Map of subnet name to subnet NSG association id (only the associations this module creates). |
 | <a name="output_subscription_id"></a> [subscription\_id](#output\_subscription\_id) | Subscription id parsed from resource\_group\_id. |
+| <a name="output_tags"></a> [tags](#output\_tags) | The tags applied to the network security group. |
 <!-- END_TF_DOCS -->
